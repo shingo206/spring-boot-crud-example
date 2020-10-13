@@ -21,7 +21,7 @@ public class ProductService {
     }
 
     public List<Product> getProductByName(String name) {
-        return repository.findByName(name);
+        return repository.findByNameContainingIgnoreCaseOrderByName(name);
     }
 
     public Product insert(Product product) {
