@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -15,12 +16,12 @@ public class ProductController {
     private final ProductService service;
 
     @PostMapping("/addProduct")
-    public Product addProduct(@RequestBody Product product) {
+    public Product addProduct(@Valid @RequestBody Product product) {
         return service.insert(product);
     }
 
     @PostMapping("/addProducts")
-    public List<Product> addProducts(@RequestBody List<Product> products) {
+    public List<Product> addProducts(@Valid @RequestBody List<Product> products) {
         return service.saveProducts(products);
     }
 
