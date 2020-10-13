@@ -1,10 +1,11 @@
 package com.javatechie.springbootcrudexample.controller;
 
 import com.javatechie.springbootcrudexample.entity.Product;
-import com.javatechie.springbootcrudexample.exception.ProductDoesNotExistException;
 import com.javatechie.springbootcrudexample.service.ProductService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -31,7 +32,7 @@ public class ProductController {
     @GetMapping("/productById/{id}")
     public Product findProductById(@PathVariable int id) {
         return service.getProductById(id)
-                .orElseThrow(ProductDoesNotExistException::new);
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Product Not Found"));
     }
 
     @GetMapping("/product/{name}")
