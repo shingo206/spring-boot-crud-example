@@ -1,20 +1,18 @@
 package com.javatechie.springbootcrudexample.entity;
 
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 
 @Entity
 @Data
-@RequiredArgsConstructor
+@AllArgsConstructor
 @NoArgsConstructor
 public class Product {
     @Id
@@ -24,11 +22,9 @@ public class Product {
     @NotBlank
     private String name;
     @NonNull
-    @NotBlank
-    @Min(0)
+    @Min(1) @Max(9_999)
     private int quantity;
     @NonNull
-    @NotBlank
-    @Min(0)
+    @Max(9_999_999)
     private Double price;
 }
