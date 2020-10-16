@@ -1,21 +1,16 @@
 package com.javatechie.springbootcrudexample.controller;
 
 import com.javatechie.springbootcrudexample.entity.Product;
+import com.javatechie.springbootcrudexample.exception.ResourceNotFoundException;
 import com.javatechie.springbootcrudexample.service.ProductService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.FieldError;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -32,7 +27,7 @@ public class ProductController {
     @GetMapping("/productById/{id}")
     public ResponseEntity<Product> findProductById(@PathVariable("id") @Min(1) int id) {
         return ResponseEntity.ok().body(service.getProductById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND)));
+                .orElseThrow(() -> new ResourceNotFoundException("Product with ID: " + id + " Not Found!")));
     }
 
     @GetMapping("/product/{name}")
@@ -53,23 +48,15 @@ public class ProductController {
 
     @PutMapping("/update")
     public void updateProduct(@RequestBody Product product) {
+        service.getProductById(product.getId())
+                .orElseThrow(() -> new ResourceNotFoundException("Product with ID: " + product.getId() + " Not Found!"));
         service.update(product);
     }
 
     @DeleteMapping("/delete/{id}")
     public void deleteProductById(@PathVariable @Min(1) int id) {
+        service.getProductById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Product with ID: " + id + " Not Found!"));
         service.delete(id);
-    }
-
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public Map<String, String> handleValidationException(MethodArgumentNotValidException e) {
-        Map<String, String> errors = new HashMap<>();
-        e.getBindingResult().getAllErrors().forEach(error -> {
-            String field = ((FieldError) error).getField();
-            String message = error.getDefaultMessage();
-            errors.put(field, message);
-        });
-        return errors;
     }
 }
